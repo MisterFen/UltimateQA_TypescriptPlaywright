@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 
 export class ComplicatedPage {
     private page: Page;
@@ -14,8 +14,9 @@ export class ComplicatedPage {
     async hasHeader(headerText: string): Promise<boolean> {
         await this.page.waitForSelector('h1', { state: 'attached' }); // Wait for h1 to be attached to the page
     
-        const headers = this.page.locator('h1');
+        const headers = this.page.locator('h1, h2');
         const count = await headers.count();
+
     
         for (let i = 0; i < count; i++) {
             const headerTextContent = await headers.nth(i).innerText();
@@ -31,5 +32,44 @@ export class ComplicatedPage {
         }
     
         return false;  // Header not found
+    }
+}
+
+export class ContactForm {
+    private form: Locator;
+    private nameField: Locator;
+    private emailField: Locator;
+    private messageField: Locator;
+    private submitButton: Locator;
+    private captchaQuestion: Locator;
+    private captchaField: Locator;
+    private submitSuccessMessage: Locator
+
+    constructor(page: Page, formSelector: string) {
+        this.form = page.locator(formSelector);
+        this.nameField = this.form.locator("#et_pb_contact_name_0");
+        this.emailField = this.form.locator("#et_pb_contact_email_0");
+        this.messageField = this.form.locator("#et_pb_contact_message_0");
+        this.submitButton = this.form.locator(".et_pb_contact_submit.et_pb_button");
+        this.captchaQuestion = this.form.locator(".et_pb_contact_captcha_question");
+        this.captchaField = this.form.locator(".et_pb_contact_captcha");
+        this.submitSuccessMessage = this.form.locator(".et-pb-contact-message");
+    }
+
+    async fillAndSubmit(name: string, email: string, message: string) {
+        await this.nameField.fill(name);
+        await this.emailField.fill(email);
+        await this.messageField.fill(message);
+
+        const captchaQuestionExpression = await this.captchaQuestion.innerText();
+        const captchaAnswer = eval(captchaQuestionExpression);
+        await this.captchaField.fill(captchaAnswer.toString());
+
+        await this.submitButton.click();
+    }
+
+    async getSuccessMessage(): Promise<string> {
+        await this.submitSuccessMessage.waitFor(); // Ensures the message is visible before retrieving it
+        return await this.submitSuccessMessage.innerText();
     }
 }
