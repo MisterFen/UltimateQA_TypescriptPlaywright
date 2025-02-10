@@ -43,7 +43,7 @@ export class ContactForm {
     private submitButton: Locator;
     private captchaQuestion: Locator;
     private captchaField: Locator;
-    private submitSuccessMessage: Locator
+    private submitMessage: Locator
 
     constructor(page: Page, formSelector: string) {
         this.form = page.locator(formSelector);
@@ -53,23 +53,37 @@ export class ContactForm {
         this.submitButton = this.form.locator(".et_pb_contact_submit.et_pb_button");
         this.captchaQuestion = this.form.locator(".et_pb_contact_captcha_question");
         this.captchaField = this.form.locator(".et_pb_contact_captcha");
-        this.submitSuccessMessage = this.form.locator(".et-pb-contact-message");
+        this.submitMessage = this.form.locator(".et-pb-contact-message");
     }
 
-    async fillAndSubmit(name: string, email: string, message: string) {
+    async fillAndSubmit(name: string, email: string, message: string, options: { invalidCaptcha?: boolean } = {}) {
         await this.nameField.fill(name);
         await this.emailField.fill(email);
         await this.messageField.fill(message);
-
-        const captchaQuestionExpression = await this.captchaQuestion.innerText();
-        const captchaAnswer = eval(captchaQuestionExpression);
+    
+        // Solve the captcha normally
+        let captchaAnswer = eval(await this.captchaQuestion.innerText());
+    
+        // Override if invalid captcha is requested
+        if (options.invalidCaptcha) {
+            captchaAnswer = captchaAnswer + 1;
+        }
+    
         await this.captchaField.fill(captchaAnswer.toString());
-
         await this.submitButton.click();
     }
 
-    async getSuccessMessage(): Promise<string> {
-        await this.submitSuccessMessage.waitFor(); // Ensures the message is visible before retrieving it
-        return await this.submitSuccessMessage.innerText();
+    async getSubmitMessage(): Promise<string> {
+        await this.submitMessage.waitFor(); // Ensures the message is visible before retrieving it
+        return await this.submitMessage.innerText();
     }
+
+    async isFormGone(): Promise<boolean> {
+        var isGone = true;
+        if (await this.nameField.isVisible() || await this.emailField.isVisible() || await this.messageField.isVisible() || await this.submitButton.isVisible()) {
+            isGone = false;
+        }
+        return isGone;
+    }
+
 }
