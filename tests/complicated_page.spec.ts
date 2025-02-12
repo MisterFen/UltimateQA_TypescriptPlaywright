@@ -13,37 +13,41 @@ test('Test UltimateQA Complicated Page', async ({ page }) => {
 
 });
 
-test.describe('Contact form 1 validation checks', () => {
-    var contactFormId = "#et_pb_contact_form_0";
-
+test.describe('Contact form validation checks', () => {
     let complicatedPage: ComplicatedPage;
-    let contactForm: ContactForm;
+    let contactForms: ContactForm[];
 
     test.beforeEach(async ({ page }) => {
         complicatedPage = new ComplicatedPage(page);
-        contactForm = new ContactForm(page, contactFormId);
-        
         await complicatedPage.navigate();
+        contactForms = await complicatedPage.getAllForms();
     });
     
     test('Valid fields successfully submit', async ({ page }) => {
-        contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman");
-        const successMessage = await contactForm.getSubmitMessage();
-        expect(successMessage).toContain("Thanks for contacting us");
-        await expect(contactForm.isFormGone()).resolves.toBe(true);
+        for (const contactForm of contactForms) {
+            test.setTimeout(10000); // Success message occasionally takes longer than default timeout
+            await contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman");
+            const successMessage = await contactForm.getSubmitMessage();
+            expect(successMessage).toContain("Thanks for contacting us");
+            await expect(contactForm.isFormGone()).resolves.toBe(true);
+        }
     });
 
     test('Invalid email doesn\'t submit', async ({ page }) => {
-        contactForm.fillAndSubmit("Bruce Wayne", "imnotbatmanbatmail.com", "I'm Batman");
-        const successMessage = await contactForm.getSubmitMessage();
-        expect(successMessage).toContain("Invalid email");
-        await expect(contactForm.isFormGone()).resolves.toBe(false);
+        for (const contactForm of contactForms) {
+            await contactForm.fillAndSubmit("Bruce Wayne", "imnotbatmanbatmail.com", "I'm Batman");
+            const successMessage = await contactForm.getSubmitMessage();
+            expect(successMessage).toContain("Invalid email");
+            await expect(contactForm.isFormGone()).resolves.toBe(false);
+        }
     });
 
     test('Incorrect captcha doesn\'t submit', async ({ page }) => {
-        contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman", { invalidCaptcha: true });
-        const successMessage = await contactForm.getSubmitMessage();
-        expect(successMessage).toContain("You entered the wrong number in captcha.");
-        await expect(contactForm.isFormGone()).resolves.toBe(false);
+        for (const contactForm of contactForms) {
+            contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman", { invalidCaptcha: true });
+            const successMessage = await contactForm.getSubmitMessage();
+            expect(successMessage).toContain("You entered the wrong number in captcha.");
+            await expect(contactForm.isFormGone()).resolves.toBe(false);
+        }
     });
 });

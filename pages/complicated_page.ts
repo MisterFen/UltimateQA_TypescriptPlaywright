@@ -2,9 +2,11 @@ import { Locator, Page } from "@playwright/test";
 
 export class ComplicatedPage {
     private page: Page;
+    private contactForms: Locator;
 
     constructor(page: Page) {
         this.page = page;
+        this.contactForms = page.locator('.et_pb_contact_form_container');
     }
 
     async navigate() {
@@ -33,6 +35,11 @@ export class ComplicatedPage {
     
         return false;  // Header not found
     }
+
+    async getAllForms(): Promise<ContactForm[]> {
+        const formLocators = await this.contactForms.all();
+        return formLocators.map(locator => new ContactForm(locator));
+    }
 }
 
 export class ContactForm {
@@ -45,11 +52,12 @@ export class ContactForm {
     private captchaField: Locator;
     private submitMessage: Locator
 
-    constructor(page: Page, formSelector: string) {
-        this.form = page.locator(formSelector);
-        this.nameField = this.form.locator("#et_pb_contact_name_0");
-        this.emailField = this.form.locator("#et_pb_contact_email_0");
-        this.messageField = this.form.locator("#et_pb_contact_message_0");
+    constructor(formLocator: Locator) {
+        this.form = formLocator;
+        // this.nameField = this.form.locator("#et_pb_contact_name_0");
+        this.nameField = this.form.getByPlaceholder("Name");
+        this.emailField = this.form.getByPlaceholder("Email Address");
+        this.messageField = this.form.getByPlaceholder("Message");
         this.submitButton = this.form.locator(".et_pb_contact_submit.et_pb_button");
         this.captchaQuestion = this.form.locator(".et_pb_contact_captcha_question");
         this.captchaField = this.form.locator(".et_pb_contact_captcha");
@@ -74,7 +82,7 @@ export class ContactForm {
     }
 
     async getSubmitMessage(): Promise<string> {
-        await this.submitMessage.waitFor(); // Ensures the message is visible before retrieving it
+        await this.submitMessage.waitFor({ state: "visible", timeout: 5000 });
         return await this.submitMessage.innerText();
     }
 
