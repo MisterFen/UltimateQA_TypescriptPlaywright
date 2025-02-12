@@ -28,8 +28,8 @@ test.describe('Contact form validation checks', () => {
             test.setTimeout(10000); // Success message occasionally takes longer than default timeout
             await contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman");
             const successMessage = await contactForm.getSubmitMessage();
-            expect(successMessage).toContain("Thanks for contacting us");
-            await expect(contactForm.isFormGone()).resolves.toBe(true);
+            expect(successMessage).toHaveText("Thanks for contacting us");
+            await expect(contactForm.isFormGone()).resolves.toBeTruthy();
         }
     });
 
@@ -37,8 +37,8 @@ test.describe('Contact form validation checks', () => {
         for (const contactForm of contactForms) {
             await contactForm.fillAndSubmit("Bruce Wayne", "imnotbatmanbatmail.com", "I'm Batman");
             const successMessage = await contactForm.getSubmitMessage();
-            expect(successMessage).toContain("Invalid email");
-            await expect(contactForm.isFormGone()).resolves.toBe(false);
+            expect(successMessage).toHaveText("Invalid email");
+            await expect(contactForm.isFormGone()).resolves.toBeFalsy();
         }
     });
 
@@ -46,8 +46,8 @@ test.describe('Contact form validation checks', () => {
         for (const contactForm of contactForms) {
             contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman", { invalidCaptcha: true });
             const successMessage = await contactForm.getSubmitMessage();
-            expect(successMessage).toContain("You entered the wrong number in captcha.");
-            await expect(contactForm.isFormGone()).resolves.toBe(false);
+            expect(successMessage).toHaveText("You entered the wrong number in captcha.");
+            await expect(contactForm.isFormGone()).resolves.toBeFalsy();
         }
     });
 });

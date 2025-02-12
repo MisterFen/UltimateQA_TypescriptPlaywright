@@ -81,9 +81,9 @@ export class ContactForm {
         await this.submitButton.click();
     }
 
-    async getSubmitMessage(): Promise<string> {
+    async getSubmitMessage(): Promise<Locator> {
         await this.submitMessage.waitFor({ state: "visible", timeout: 5000 });
-        return await this.submitMessage.innerText();
+        return await this.submitMessage;
     }
 
     async isFormGone(): Promise<boolean> {
