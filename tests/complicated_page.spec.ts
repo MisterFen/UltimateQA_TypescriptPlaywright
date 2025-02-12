@@ -25,7 +25,7 @@ test.describe('Contact form validation checks', () => {
     
     test('Valid fields successfully submit', async ({ page }) => {
         for (const contactForm of contactForms) {
-            test.setTimeout(10000); // Success message occasionally takes longer than default timeout
+            test.slow(); // Success message occasionally takes longer than default timeout
             await contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman");
             const successMessage = await contactForm.getSubmitMessage();
             expect(successMessage).toHaveText("Thanks for contacting us");
