@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, selectors } from "@playwright/test";
 
 export class ComplicatedPage {
     private page: Page;
@@ -54,10 +54,10 @@ export class ContactForm {
 
     constructor(formLocator: Locator) {
         this.form = formLocator;
-        // this.nameField = this.form.locator("#et_pb_contact_name_0");
-        this.nameField = this.form.getByPlaceholder("Name");
-        this.emailField = this.form.getByPlaceholder("Email Address");
-        this.messageField = this.form.getByPlaceholder("Message");
+        selectors.setTestIdAttribute("data-original_id");
+        this.nameField = this.form.getByTestId("name");
+        this.emailField = this.form.getByTestId("email");
+        this.messageField = this.form.getByTestId("message");
         this.submitButton = this.form.locator(".et_pb_contact_submit.et_pb_button");
         this.captchaQuestion = this.form.locator(".et_pb_contact_captcha_question");
         this.captchaField = this.form.locator(".et_pb_contact_captcha");
