@@ -55,7 +55,7 @@ export class ContactForm {
     constructor(formLocator: Locator) {
         this.form = formLocator;
         selectors.setTestIdAttribute("data-original_id");
-        this.nameField = this.form.getByTestId("name");
+        this.nameField = this.form.getByTestId("name"); //These fields can be covered by placeholder value. Unlikely to change. But assuming test-id is even more reliable
         this.emailField = this.form.getByTestId("email");
         this.messageField = this.form.getByTestId("message");
         this.submitButton = this.form.locator(".et_pb_contact_submit.et_pb_button");

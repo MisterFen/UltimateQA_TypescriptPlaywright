@@ -1,9 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { ComplicatedPage, ContactForm } from '../pages/complicated_page';
+import { test, expect } from '../fixtures/complicated_page_fixtures';
 
-test('Test UltimateQA Complicated Page', async ({ page }) => {
-    const complicatedPage = new ComplicatedPage(page);
-
+test('Test UltimateQA Complicated Page', async ({ complicatedPage }) => {
     await complicatedPage.navigate();
 
     await expect.soft(await complicatedPage.hasHeader("Skills Improved:")).toBeTruthy();
@@ -14,16 +11,13 @@ test('Test UltimateQA Complicated Page', async ({ page }) => {
 });
 
 test.describe('Contact form validation checks', () => {
-    let complicatedPage: ComplicatedPage;
-    let contactForms: ContactForm[];
-
-    test.beforeEach(async ({ page }) => {
-        complicatedPage = new ComplicatedPage(page);
-        await complicatedPage.navigate();
-        contactForms = await complicatedPage.getAllForms();
-    });
     
-    test('Valid fields successfully submit', async ({ page }) => {
+    // If no forms are present, all other tests here will still pass. This check covers this
+    test('3 forms are present', async ({ contactForms }) => {
+        expect(contactForms).toHaveLength(3);
+    });
+
+    test('Valid fields successfully submit', async ({ contactForms }) => {
         for (const contactForm of contactForms) {
             test.slow(); // Success message occasionally takes longer than default timeout
             await contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman");
@@ -33,7 +27,7 @@ test.describe('Contact form validation checks', () => {
         }
     });
 
-    test('Invalid email doesn\'t submit', async ({ page }) => {
+    test('Invalid email doesn\'t submit', async ({ contactForms }) => {
         for (const contactForm of contactForms) {
             await contactForm.fillAndSubmit("Bruce Wayne", "imnotbatmanbatmail.com", "I'm Batman");
             const successMessage = await contactForm.getSubmitMessage();
@@ -42,7 +36,7 @@ test.describe('Contact form validation checks', () => {
         }
     });
 
-    test('Incorrect captcha doesn\'t submit', async ({ page }) => {
+    test('Incorrect captcha doesn\'t submit', async ({ contactForms }) => {
         for (const contactForm of contactForms) {
             contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman", { invalidCaptcha: true });
             const successMessage = await contactForm.getSubmitMessage();
