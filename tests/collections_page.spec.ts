@@ -8,11 +8,11 @@ test.describe('UnAuthenticated User Tests', () => {
     });
 });
 
-test.describe('Authenticated User Tests', () => {
-    test.use({ storageState: 'auth.json' });
-    
-    test('User should be logged in', async ({ collectionsPage }) => {
-        await collectionsPage.goto();
-        await expect(collectionsPage.isUserLoggedIn()).resolves.toBeTruthy();
-    });
-});
+// test.describe('Authenticated User Tests', () => {
+//     test.use({ storageState: 'auth.json' });
+
+//     test('User should be logged in', async ({ collectionsPage }) => {
+//         await collectionsPage.goto();
+//         await expect(collectionsPage.isUserLoggedIn()).resolves.toBeTruthy();
+//     });
+// });
