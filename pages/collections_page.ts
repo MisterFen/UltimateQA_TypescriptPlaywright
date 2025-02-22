@@ -9,7 +9,7 @@ export class CollectionsPage {
     }
 
     products_header = () => this.page.getByRole('heading', { name: 'Products' });
-    my_dashboad_link = () => this.page.getByRole('link', { name: 'My Dashboard' });
+    my_dashboard_link = () => this.page.getByRole('link', { name: 'My Dashboard' });
 
     async goto() {
         await this.page.goto("https://courses.ultimateqa.com/collections");
@@ -23,7 +23,7 @@ export class CollectionsPage {
 
     async isUserLoggedIn()
     {
-        await this.my_dashboad_link().waitFor({ state: 'visible', timeout: 10000 });
-        return await this.my_dashboad_link().isVisible();
+        await this.products_header().waitFor({ state: 'visible', timeout: 10000 });
+        return await this.my_dashboard_link().isVisible();
     }
 }
