@@ -9,6 +9,7 @@ export class LoginPage {
 
     emailField = () => this.page.locator('#user\\[email\\]');
     passwordField = () => this.page.locator('#user\\[password\\]');
+    createAccountLink = () => this.page.getByRole('link', { name: 'Create a new account' });
     
 
     async goto() {
@@ -19,6 +20,10 @@ export class LoginPage {
         await this.emailField().fill(email);
         await this.passwordField().fill(password);
         await this.page.getByRole("button", { name: "Sign in" }).click();
+    }
+
+    async selectCreateNewAccount(){
+        await this.createAccountLink().click();
     }
 
     async hasHeader(headerText: string): Promise<boolean> {
