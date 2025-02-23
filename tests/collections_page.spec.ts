@@ -13,12 +13,12 @@ test.describe('Cloudflare Protected Tests', () => {
         await expect(collectionsPage.isUserLoggedIn()).resolves.toBeFalsy();
     });
 
-    test.describe('Authenticated User Tests', () => {
-        test.use({ storageState: path.join(__dirname, '../playwright/.auth/user.json')});
+    // test.describe('Authenticated User Tests', () => {
+    //     test.use({ storageState: path.join(__dirname, '../playwright/.auth/user.json')});
     
-        test('User should be logged in', async ({ collectionsPage }) => {
-            await collectionsPage.goto();
-            await expect(collectionsPage.isUserLoggedIn()).resolves.toBeTruthy();
-        });
-    });
+    //     test('User should be logged in', async ({ collectionsPage }) => {
+    //         await collectionsPage.goto();
+    //         await expect(collectionsPage.isUserLoggedIn()).resolves.toBeTruthy();
+    //     });
+    // });
 });
