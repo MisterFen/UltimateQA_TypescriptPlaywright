@@ -15,6 +15,7 @@ export class AccountCreationPage {
 
     async isPageLoaded()
     {
+        await this.title().waitFor({ state: "visible", timeout: 5000 });
         return await this.title().isVisible();
     }
 };

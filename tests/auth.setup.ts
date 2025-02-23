@@ -7,6 +7,7 @@ const authFile = path.join(__dirname, '../playwright/.auth/user.json');
 
 setup('authenticate', async ({ page }) => {
   const loginPage = new LoginPage(page);
+  loginPage.goto();
   const collectionsPage = new CollectionsPage(page);
   loginPage.login("testuser@testuser.com", "password1"); //TODO: Better solution. passwords in source code is always bad
   await expect(collectionsPage.isPageLoaded()).resolves.toBeTruthy();
