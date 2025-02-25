@@ -1,0 +1,9 @@
+[
+    { "name": "Bruce Wayne", "email": "bwayne@wayneenterprises.com", "message": "I'm not Batman" },
+    { "name": "Clark Kent", "email": "ckent@metropolise.org", "message": "I'm not Superman" },
+    { "name": "Diana Prince", "email": "dprince@themiscira.gov", "message": "I'm just an ambassador" },
+    { "name": "Peter Parker", "email": "pparker@dailybugle.com", "message": "I'm just a photographer" },
+    { "name": "Tony Stark", "email": "tstark@starkindustries.com", "message": "I'm definitely not Iron Man" },
+    { "name": "Natasha Romanoff", "email": "nromanoff@shield.gov", "message": "I'm just a spy" },
+    { "name": "Barry Allen", "email": "ballen@ccpd.gov", "message": "I'm not the fastest man alive" }
+  ]

@@ -17,14 +17,25 @@ test.describe('Contact form validation checks', () => {
         expect(contactForms).toHaveLength(3);
     });
 
-    test('Valid fields successfully submit', async ({ contactForms }) => {
-        for (const contactForm of contactForms) {
-            test.slow(); // Success message occasionally takes longer than default timeout
-            await contactForm.fillAndSubmit("Bruce Wayne", "imnotbatman@batmail.com", "I'm Batman");
-            const successMessage = await contactForm.getSubmitMessage();
-            expect(successMessage).toHaveText("Thanks for contacting us");
-            await expect(contactForm.isFormGone()).resolves.toBeTruthy();
-        }
+    test.describe.parallel("Contact Form Tests", () => {
+        test("Submit form with valid data", async ({ page, contactForms, validContactFormData: validContactFormData }) => {
+            for (const data of validContactFormData) {
+                test.slow(); // This is getting a slow response from a contact form. 3 forms on the page.
+                await test.step(`Submitting with: ${data.name} | ${data.email}`, async () => {
+    
+                    for (const contactForm of contactForms) {
+                        await contactForm.fillAndSubmit(data.name, data.email, data.message);
+    
+                        const successMessage = await contactForm.getSubmitMessage();
+                        expect(successMessage).toHaveText("Thanks for contacting us");
+                        await expect(contactForm.isFormGone()).resolves.toBeTruthy();
+                    }
+    
+                    // Reset the page after each test case
+                    await page.reload();
+                });
+            }
+        });
     });
 
     test('Invalid email doesn\'t submit', async ({ contactForms }) => {
