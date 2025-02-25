@@ -10,7 +10,7 @@ export class ComplicatedPage {
     }
 
     async navigate() {
-        await this.page.goto("https://ultimateqa.com/complicated-page/");
+        await this.page.goto("complicated-page/");
     }
 
     async hasHeader(headerText: string): Promise<boolean> {
@@ -48,7 +48,7 @@ export class ContactForm {
     nameField = () => this.form.getByTestId("name"); //These fields can be covered by placeholder value. Unlikely to change. But test-id is even more reliable
     emailField = () => this.form.getByTestId("email");
     messageField = () => this.form.getByTestId("message");
-    submitButton = () => this.form.locator(".et_pb_contact_submit.et_pb_button");
+    submitButton = () => this.form.getByRole('button', { name: 'Submit' });
     captchaQuestion = () => this.form.locator(".et_pb_contact_captcha_question");
     captchaField = () => this.form.locator(".et_pb_contact_captcha");
     submitMessage = () => this.form.locator(".et-pb-contact-message");

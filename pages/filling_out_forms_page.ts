@@ -8,7 +8,7 @@ export class FillingOutFormsPage {
     }
 
     async navigate() {
-        await this.page.goto("https://ultimateqa.com/filling-out-forms/");
+        await this.page.goto("/filling-out-forms/");
     }
 
     async fillForm(name: string, message: string) {

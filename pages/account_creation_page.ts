@@ -10,7 +10,7 @@ export class AccountCreationPage {
     title = () => this.page.getByRole('heading', { name: 'Create a new account' });
 
     async goto() {
-        await this.page.goto("https://courses.ultimateqa.com/users/sign_up");
+        await this.page.goto("/users/sign_up");
     }
 
     async isPageLoaded()
