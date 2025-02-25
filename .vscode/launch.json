@@ -16,12 +16,39 @@
                 "${workspaceFolder}/**/*.js"
             ]
         },
-    {
+        {
+            "name": "Run Playwright once",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npx",
+            "args": ["playwright", "test"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Run Playwright with Repeat",
             "type": "node",
             "request": "launch",
             "runtimeExecutable": "npx",
             "args": ["playwright", "test", "--repeat-each=3"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug On Safari",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npx",
+            "args": ["playwright", "test", "--debug", "--project=Mobile Safari"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Run On Safari",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npx",
+            "args": ["playwright", "test", "--project=Mobile Safari"],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
         }
