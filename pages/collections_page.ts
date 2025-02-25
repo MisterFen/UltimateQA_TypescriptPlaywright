@@ -1,5 +1,4 @@
 import { Locator, Page, selectors, expect } from "@playwright/test";
-import { link } from "fs";
 
 export class CollectionsPage {
     private page: Page;
@@ -22,12 +21,28 @@ export class CollectionsPage {
         return await this.products_header().isVisible();
     }
 
-    async isUserLoggedIn()
-    {
-        await this.products_header().waitFor({ state: 'visible', timeout: 10000 });
-        if (await this.dashboard_expand_button().isVisible()){
-            await this.dashboard_expand_button().click();
+    async isUserLoggedIn(): Promise<boolean> {
+        await this.products_header().waitFor({ state: 'visible', timeout: 5000 });
+    
+        // Check if dashboard link is already visible (desktop view)
+        if (await this.my_dashboard_link().isVisible()) {
+            return true;
         }
-        return await this.my_dashboard_link().isVisible();
+    
+        // If not visible, check if the expand button is present (mobile view)
+        if (await this.dashboard_expand_button().isVisible()) {
+            await this.dashboard_expand_button().click();
+    
+            // Wait for potential animations to complete
+            await this.page.waitForTimeout(300); 
+    
+            // Re-check if menu actually expanded
+            if (!(await this.my_dashboard_link().isVisible())) {
+                await this.page.waitForTimeout(500); // Additional wait in case of delay
+            }
+        }
+    
+        // Final check to see if the dashboard link is now visible
+        return await this.my_dashboard_link().isVisible().catch(() => false);
     }
 }
