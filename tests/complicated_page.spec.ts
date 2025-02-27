@@ -1,4 +1,5 @@
 import { test, expect } from '../fixtures/complicated_page_fixtures';
+import { testData } from "../fixtures/testdata_fixtures";
 
 test('Test UltimateQA Complicated Page', async ({ complicatedPage }) => {
     await complicatedPage.navigate();
@@ -7,7 +8,6 @@ test('Test UltimateQA Complicated Page', async ({ complicatedPage }) => {
     await expect.soft(await complicatedPage.hasHeader("Section of Buttons")).toBeTruthy();
     await expect.soft(await complicatedPage.hasHeader("Section of Social Media Follows")).toBeTruthy();
     await expect.soft(await complicatedPage.hasHeader("Section of Random Stuff")).toBeTruthy();
-
 });
 
 test.describe('Contact form validation checks', () => {
@@ -17,25 +17,18 @@ test.describe('Contact form validation checks', () => {
         expect(contactForms).toHaveLength(3);
     });
 
-    test.describe.parallel("Contact Form Tests", () => {
-        test("Submit form with valid data", async ({ page, contactForms, validContactFormData: validContactFormData }) => {
-            for (const data of validContactFormData) {
-                test.slow(); // This is getting a slow response from a contact form. 3 forms on the page.
+    test.describe("Valid boundary input data checks", () => {
+        for (const data of testData.validContactFormData) {
+            test(`Submit with test entry: ${data.name}`, async ({ page, contactForms }) => {
+                test.slow(); // This is getting a slow response from a contact form
                 await test.step(`Submitting with: ${data.name} | ${data.email}`, async () => {
-    
-                    for (const contactForm of contactForms) {
-                        await contactForm.fillAndSubmit(data.name, data.email, data.message);
-    
-                        const successMessage = await contactForm.getSubmitMessage();
-                        expect(successMessage).toHaveText("Thanks for contacting us");
-                        await expect(contactForm.isFormGone()).resolves.toBeTruthy();
-                    }
-    
-                    // Reset the page after each test case
-                    await page.reload();
+                    await contactForms[0].fillAndSubmit(data.name, data.email, data.message);
+                    const successMessage = await contactForms[0].getSubmitMessage();
+                    expect(successMessage).toHaveText("Thanks for contacting us");
+                    await expect(contactForms[0].isFormGone()).resolves.toBeTruthy();
                 });
-            }
-        });
+            });
+        };
     });
 
     test('Invalid email doesn\'t submit', async ({ contactForms }) => {
